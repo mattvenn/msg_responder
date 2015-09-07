@@ -16,6 +16,11 @@ ch = logging.StreamHandler()
 ch.setFormatter(log_format)
 log.addHandler(ch)
 
+# create file handler and set to debug
+fh = logging.FileHandler(__file__ + '.log')
+fh.setFormatter(log_format)
+log.addHandler(fh)
+
 app = Flask(__name__)
  
 @app.route("/", methods=['GET', 'POST'])
