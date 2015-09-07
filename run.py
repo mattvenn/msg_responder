@@ -28,7 +28,7 @@ def respond():
         return ''
 
     # look up a word
-    command = body.split(' ')
+    command = body.lower().split()
     if command[0] == 'w':
         word = command[1]
         log.debug("looking up [%s]" % word)
