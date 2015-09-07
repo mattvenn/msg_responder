@@ -14,6 +14,12 @@ pip install -r requirements.txt
 
 Setup an account and apply for API (which will be shown in account settings)
 
+## Twilio
+
+* setup account
+* buy a number capable of receiving and sending texts
+* set SMS URL to your internet host on port 40000
+
 ## Secrets
 
 copy not-secrets.py to secrets.py and fill in the blanks
