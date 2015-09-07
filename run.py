@@ -66,9 +66,11 @@ def respond():
         except:
             # default is 60 seconds
             delay = 60
-        response = "calling [%s] in %d seconds" % (my_num, delay)
+        log.info("calling [%s] in %d seconds" % (my_num, delay))
         t = threading.Thread(target=delayed_call, args=(delay, my_num, my_num,))
         t.start()
+        # don't send a message back
+        return ''
     # unrecognised command given
     else:
         response = "unrecognised command"
