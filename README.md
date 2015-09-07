@@ -1,6 +1,9 @@
 # msg_responder
 
-Twilio based SMS responder service that at the moment just looks up words in a dictionary.
+Twilio based SMS responder service that at the moment has these commands:
+
+* w word - looks up a word on wordnik.com and replies with the definition
+* p delay - gives a callback in delay seconds
 
 # Requirements
 
