@@ -35,12 +35,12 @@ def respond():
         client = swagger.ApiClient(wordnik_key, wordnik_url)
         wordApi = WordApi.WordApi(client)
         definitions = wordApi.getDefinitions(word, limit=1)
-        response = definitions[0].text
-        if response is None:
-            reponse = "no definition"
+        if definitions is None:
+            response = "no definition"
+        else:
+            response = definitions[0].text
     else:
-        log.info("unrecognised command")
-        return ''
+        response = "unrecognised command"
 
     log.debug(response)
     resp = twilio.twiml.Response()
