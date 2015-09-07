@@ -1,7 +1,7 @@
 from flask import Flask, request, redirect
 import twilio.twiml
 from twilio.rest import TwilioRestClient
-import logging, time, threading, urllib
+import logging, time, threading, urllib, socket
 from secrets import my_num, wordnik_key, sid, token
 
 # dictionary stuff
@@ -20,6 +20,7 @@ log.addHandler(ch)
 
 app = Flask(__name__)
 
+# function to run in a thread after receiving message
 def delayed_call(delay, number, to_num):
     time.sleep(delay)
     # twilio client
@@ -81,5 +82,10 @@ def respond():
     return str(resp)
  
 if __name__ == "__main__":
-    app.run('0.0.0.0',40000,debug=True)
+    hostname = socket.gethostname()
+    if hostname == 'mattsmac':
+        debug = True
+    else:
+        debug = False
+    app.run('0.0.0.0',40000,debug=debug)
     log.info("stopping")
