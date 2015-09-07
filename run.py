@@ -16,11 +16,6 @@ ch = logging.StreamHandler()
 ch.setFormatter(log_format)
 log.addHandler(ch)
 
-# create file handler and set to debug
-fh = logging.FileHandler(__file__ + '.log')
-fh.setFormatter(log_format)
-log.addHandler(fh)
-
 app = Flask(__name__)
  
 @app.route("/", methods=['GET', 'POST'])
@@ -41,6 +36,8 @@ def respond():
         wordApi = WordApi.WordApi(client)
         definitions = wordApi.getDefinitions(word, limit=1)
         response = definitions[0].text
+        if response is None:
+            reponse = "no definition"
     else:
         log.info("unrecognised command")
         return ''
@@ -51,4 +48,5 @@ def respond():
     return str(resp)
  
 if __name__ == "__main__":
-    app.run('0.0.0.0',40000, debug=True)
+    app.run('0.0.0.0',40000)
+    log.info("stopping")
