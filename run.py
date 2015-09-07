@@ -1,7 +1,10 @@
 from flask import Flask, request, redirect
 import twilio.twiml
 import logging
-from secrets import my_num
+from secrets import my_num, wordnik_key
+# dictionary stuff
+from wordnik import *
+wordnik_url = 'http://api.wordnik.com/v4'
  
 # setup logger
 log = logging.getLogger('')
@@ -19,12 +22,27 @@ app = Flask(__name__)
 def respond():
     from_number = request.values.get('From', None) 
     body = request.values.get('Body', None) 
+    log.debug("got [%s] from [%s]" % (body, from_number))
     if from_number != my_num:
-        log.info("not responding to invalid number %s" % from_number)
+        log.info("not responding to invalid number")
         return ''
 
+    # look up a word
+    command = body.split(' ')
+    if command[0] == 'w':
+        word = command[1]
+        log.debug("looking up [%s]" % word)
+        client = swagger.ApiClient(wordnik_key, wordnik_url)
+        wordApi = WordApi.WordApi(client)
+        definitions = wordApi.getDefinitions(word, limit=1)
+        response = definitions[0].text
+    else:
+        log.info("unrecognised command")
+        return ''
+
+    log.debug(response)
     resp = twilio.twiml.Response()
-    resp.message(body)
+    resp.message(response)
     return str(resp)
  
 if __name__ == "__main__":
