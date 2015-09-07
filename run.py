@@ -79,5 +79,5 @@ def respond():
     return str(resp)
  
 if __name__ == "__main__":
-    app.run('0.0.0.0',40000,debug=True)
+    app.run('0.0.0.0',40000)
     log.info("stopping")
