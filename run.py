@@ -1,7 +1,7 @@
-from flask import Flask, request, redirect
+from flask import Flask, request, redirect, abort
 import twilio.twiml
 from twilio.rest import TwilioRestClient
-import logging, time, threading, urllib
+import logging, time, threading, urllib, socket
 from secrets import my_num, wordnik_key, sid, token
 
 # dictionary stuff
@@ -20,6 +20,7 @@ log.addHandler(ch)
 
 app = Flask(__name__)
 
+# function to run in a thread after receiving message
 def delayed_call(delay, number, to_num):
     time.sleep(delay)
     # twilio client
@@ -34,7 +35,28 @@ def delayed_call(delay, number, to_num):
         url="http://twimlets.com/message?" + urllib.urlencode(msg_params))
     log.debug(call.sid)
 
- 
+@app.route("/uptimerobot", methods=['GET'])
+def uptimerobot():
+    if not "uptimerobot" in socket.gethostbyaddr(request.remote_addr)[0]:
+        abort(404)
+
+    name = request.values.get('monitorFriendlyName')
+    status = request.values.get('alertTypeFriendlyName')
+
+    if name is None or status is None:
+        log.warning("couldn't understand uptime robot request")
+        abort(500)
+
+    client = TwilioRestClient(sid, token)
+    msg = "monitor %s is %s" % (name, status)
+    message = client.messages.create(body=msg,
+        to=my_num, 
+       from_="uptimerobot"
+        )
+    log.debug(message.sid)
+    return "ok"
+
+
 @app.route("/", methods=['GET', 'POST'])
 def respond():
     from_number = request.values.get('From', None) 
@@ -81,5 +103,10 @@ def respond():
     return str(resp)
  
 if __name__ == "__main__":
-    app.run('0.0.0.0',40000)
+    hostname = socket.gethostname()
+    if hostname == 'mattsmac':
+        debug = True
+    else:
+        debug = False
+    app.run('0.0.0.0',40000,debug=debug)
     log.info("stopping")
