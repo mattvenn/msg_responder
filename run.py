@@ -2,7 +2,7 @@ from flask import Flask, request, redirect, abort
 import twilio.twiml
 from twilio.rest import TwilioRestClient
 import logging, time, threading, urllib, socket
-from secrets import my_num, wordnik_key, sid, token
+from secrets import maria_num, my_num, wordnik_key, sid, token
 
 # dictionary stuff
 from wordnik import *
@@ -66,11 +66,12 @@ def forward():
         return ''
 
     response = twilio.twiml.Response()
-    resp.dial("+447949653676")
+    # Maria's number
+    response.dial(maria_num)
 
     # If the dial fails:
-    resp.say("The call failed, or the remote party hung up. Goodbye.")
-    return str(resp)
+    response.say("The call failed, or the remote party hung up. Goodbye.")
+    return str(response)
 
 @app.route("/", methods=['GET', 'POST'])
 def respond():
