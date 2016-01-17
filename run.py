@@ -56,6 +56,21 @@ def uptimerobot():
     log.debug(message.sid)
     return "ok"
 
+@app.route("/caller", methods=['GET', 'POST'])
+def forward():
+    from_number = request.values.get('From', None) 
+    log.debug("got call from [%s]" % (from_number))
+    
+    if from_number != my_num:
+        log.info("not responding to invalid number")
+        return ''
+
+    response = twilio.twiml.Response()
+    resp.dial("+447949653676")
+
+    # If the dial fails:
+    resp.say("The call failed, or the remote party hung up. Goodbye.")
+    return str(resp)
 
 @app.route("/", methods=['GET', 'POST'])
 def respond():
